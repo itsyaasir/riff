@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 /// This enum represents three types of text modifications
 pub enum Change {
     /// This variant represent where a character is inserted at a specified position.
