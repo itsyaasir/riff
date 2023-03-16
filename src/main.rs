@@ -1,3 +1,5 @@
+mod levenshtein;
+
 use std::path::Path;
 
 use anyhow::anyhow;

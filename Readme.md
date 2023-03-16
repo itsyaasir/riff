@@ -1,10 +1,10 @@
-# Riff
+# riff
 
 This program is written in Rust and uses the Levenshtein algorithm to find the difference between two file text.
 
 ## Usage
 
-To use this program, simply pass in two strings as command line arguments. The program will then output the difference in there two files
+To use this program, simply pass in two file texts as command line arguments. The program will then output the difference in the two files
 
 ``` bash
 ./riff ./file1.txt ./file2.txt
