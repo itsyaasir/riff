@@ -1,8 +1,9 @@
+mod changes;
 mod levenshtein;
-
 use std::path::Path;
 
 use anyhow::anyhow;
+use levenshtein::levenshtein_diff;
 
 fn main() -> anyhow::Result<()> {
     let args: Vec<_> = std::env::args().collect();
@@ -14,13 +15,17 @@ fn main() -> anyhow::Result<()> {
     let file_one = read_file(Path::new(&args[1]))?;
     let file_two = read_file(Path::new(&args[2]))?;
 
-    eprintln!("file contents : {file_two}");
+    let changes = levenshtein_diff(&file_one, &file_two);
+
+    // Print the changes according to the colors
+    // red for deletion
+    // green for insertion
+
     Ok(())
 }
 
+/// Simple function to read the files that have been passed through the arguments
 fn read_file(file: &Path) -> anyhow::Result<String> {
-    // Read the file
-
     let file_contents = std::fs::read_to_string(file)?;
 
     Ok(file_contents)
