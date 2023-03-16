@@ -59,6 +59,7 @@ fn main() -> anyhow::Result<()> {
 
 /// Simple function to read the files that have been passed through the arguments
 fn read_file(file: &Path) -> anyhow::Result<String> {
+    // TODO:: Improve the error handling of this function
     let file_contents = std::fs::read_to_string(file)?;
 
     Ok(file_contents)
