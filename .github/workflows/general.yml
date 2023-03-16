@@ -51,26 +51,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: -- -D warnings
 
-  # coverage:
-  #   name: Code coverage
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
-
-  #     - name: Install stable toolchain
-  #       uses: actions-rs/toolchain@v1
-  #       with:
-  #         toolchain: stable
-  #         override: true
-
-  #     - name: Run cargo-tarpaulin
-  #       uses: actions-rs/tarpaulin@v0.22.0
-  #       with:
-  #         args: "--ignore-tests --no-fail-fast"
-
   coverage:
-    name: Tests with coverage
+    name: Code Coverage
     runs-on: ubuntu-latest
     container:
       image: xd009642/tarpaulin:develop-nightly
