@@ -57,9 +57,18 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-/// Simple function to read the files that have been passed through the arguments
+/// This function reads the contents of a file and returns it as a string
+/// # Errors
+/// This function will return an error if the file does not exist or if there
+/// is an error reading the file
+///
 fn read_file(file: &Path) -> anyhow::Result<String> {
-    // TODO:: Improve the error handling of this function
+    // Check if the file exists
+
+    if !file.exists() {
+        return Err(anyhow!("File {} does not exist", file.display()));
+    }
+
     let file_contents = std::fs::read_to_string(file)?;
 
     Ok(file_contents)

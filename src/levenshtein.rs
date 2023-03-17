@@ -1,17 +1,33 @@
-//! Levenshtein algorithm
-//! This function calculates the Levenshtein distance between text1 and text2, which is the minimum number of insertions, deletions, or substitutions required
-//! to change one string into the other.
-//!
-// !The function takes two string slices as arguments, text1 and text2, and returns
-//! a vector of Change enum variants representing the differences between the two texts.
-
 use crate::changes::Change;
 use anyhow::anyhow;
-pub fn levenshtein_diff(text1: &str, text2: &str) -> anyhow::Result<Vec<Change>> {
-    let mut changes = Vec::new();
 
+/// Calculates the Levenshtein distance between text1 and text2.
+/// The function takes two string slices as arguments, text1 and text2, and returns
+/// a vector of Change enum variants representing the differences between the two texts.
+/// # Panics
+/// The function panics if the difference between the lengths of text1 and text2 is greater than usize::MAX.
+///
+/// # Errors
+/// The function returns an error if the difference between the lengths of
+/// text1 and text2 is greater than usize::MAX.
+///
+/// # Safety
+/// The function is safe.
+/// # Performance
+///
+/// The function has a time complexity of O(nm) and a space complexity of O(nm).
+///
+/// # See also
+///
+/// [Wikipedia](https://en.wikipedia.org/wiki/Levenshtein_distance) | [Rosetta Code](https://rosettacode.org/wiki/Levenshtein_distance#Rust) | [Levenshtein Distance](https://www.youtube.com/watch?v=MiqoA-yF-0M) | [Levenshtein Distance](https://www.youtube.com/watch?v=We3YDTzNXEk)
+///
+pub fn levenshtein_diff(text1: &str, text2: &str) -> anyhow::Result<Vec<Change>> {
+    // The vector of changes is initialized.
+    let mut changes = Vec::new();
+    // The matrix is initialized with the size of the two strings plus one.
     let mut matrix = vec![vec![0; text2.len() + 1]; text1.len() + 1];
 
+    // The first row and column of the matrix are initialized with the index of the character in the string.
     matrix
         .iter_mut()
         .take(text1.len() + 1)
@@ -20,9 +36,18 @@ pub fn levenshtein_diff(text1: &str, text2: &str) -> anyhow::Result<Vec<Change>>
             row[0] = i;
         });
 
-    for j in 0..=text2.len() {
-        matrix[0][j] = j;
-    }
+    matrix[0]
+        .iter_mut()
+        .take(text2.len() + 1)
+        .enumerate()
+        .for_each(|(j, col)| {
+            *col = j;
+        });
+
+    // The matrix is filled with the minimum number of changes required to transform text1 into text2.
+    // The algorithm is based on the following recurrence relation:
+    // matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + 1) if text1[i] != text2[j]
+    // matrix[i][j] = matrix[i - 1][j - 1] if text1[i] == text2[j]
 
     for i in 1..=text1.len() {
         for j in 1..=text2.len() {
@@ -40,6 +65,11 @@ pub fn levenshtein_diff(text1: &str, text2: &str) -> anyhow::Result<Vec<Change>>
     let mut i = text1.len();
     let mut j = text2.len();
 
+    // The changes are calculated by traversing the matrix from the bottom right corner to the top left corner.
+    // If the current cell is equal to the cell above it plus one, then a deletion has occurred.
+    // If the current cell is equal to the cell to the left of it plus one, then an insertion has occurred.
+    // If the current cell is equal to the cell to the top left of it plus one, then a substitution has occurred.
+    // If the current cell is equal to the cell to the top left of it, then no change has occurred.
     while i != 0 && j != 0 {
         if text1.chars().nth(i - 1) == text2.chars().nth(j - 1) {
             i = i.checked_sub(1).ok_or(anyhow!("Underflow Error"))?;
